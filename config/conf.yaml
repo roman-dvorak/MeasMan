@@ -1,0 +1,16 @@
+name: Measurement monitor view
+web: 1
+group:
+    name: Zakladni skupina
+
+
+devices:
+    - device_name: localhost
+      url: localhost
+      executor: localhost
+      protocol: localhost
+      system: ubuntu
+      monitors:
+          - type: check_app_running
+            app_name: ueyeethd
+            interval: 5

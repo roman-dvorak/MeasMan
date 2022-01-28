@@ -1,0 +1,12 @@
+{{ define "content" }}
+
+<h1> Úvodní titulek.. </h1>
+
+<ul>
+{{ range $key, $element := .Devices }}
+	<li> {{$key}} </li>
+{{ end }}
+</ul>
+
+
+{{ end }}
