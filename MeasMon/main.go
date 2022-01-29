@@ -16,12 +16,12 @@ import (
 	badger "github.com/dgraph-io/badger/v3"
 )
 
-func homeHandler(devices map[string]DevicesStatus) func(http.ResponseWriter, *http.Request) {
+func homeHandler(configMonitor map[string]ConfigMonitors) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 
 		m := map[string]interface{}{
-			"Devices": devices,
+			"Devices": configMonitor,
 		}
 
 
@@ -41,15 +41,49 @@ func task2() {
 }
 
 
+func monitorCheckAppRunning(mon map[string]ConfigMonitors, name string) (err error){
+	fmt.Println("TASK, check app running", mon[name])
+	i := mon[name]
+	i.Status += 1
+	mon[name] = i
+
+	return nil
+}
+
+func monitorNoneTask(mon map[string]ConfigMonitors, name string) (err error){
+	fmt.Println("TASK UNKNOWN")
+
+	return nil
+}
+
+// func get_task(mon *ConfigMonitors) func(mon *ConfigMonitors) {
+// 	fmt.Println("Vyhledavam spoustec pro:", mon.MonitorType)
+// 	switch mon.MonitorType {
+// 		case "check_app_running":
+// 			return monitorCheckAppRunning
+// 	}
+//
+// 	return monitorNoneTask
+// }
+
+func get_task(mon *ConfigMonitors) func(mon map[string]ConfigMonitors, name string) (err error) {
+	fmt.Println("Vyhledavam spoustec pro:", mon.MonitorType, mon.AppName)
+	switch mon.MonitorType {
+		case "check_app_running":
+			return monitorCheckAppRunning
+	}
+
+	return monitorNoneTask
+}
 
 
 func main() {
 	//itteration := 0
 
-	devices := make(map[string]DevicesStatus)
-
-	devices["A"] = DevicesStatus{1, 0}
-	devices["B"] = DevicesStatus{10, 10}
+	devices := make(map[string]ConfigMonitors)
+	//
+	// devices["A"] = DevicesStatus{1, 0}
+	// devices["B"] = DevicesStatus{10, 10}
 
 	// Load configuration file
 	db, err := badger.Open(badger.DefaultOptions("/tmp/MeasMan"))
@@ -75,11 +109,19 @@ func main() {
 	for dev_i, dev := range data.Devices {
 		fmt.Println("Device ", dev_i)
 		for mon_i, mon := range dev.Monitors {
-			fmt.Println("\t Monitor:", mon_i, " > ", mon.AppName)
-			_, _ = s.Every(mon.Interval).Do(task2)
+			//mon.Device = dev
+			devices[mon.AppName] =  mon
+
+			fmt.Println("\t Monitor:", mon_i, " > ", mon.AppName, mon.Interval)
+			//get_task(&mon)
+			fmt.Println(">>", &mon)
+			f := get_task(&mon)
+			_, _ = s.Every(mon.Interval).Seconds().Do(f, devices, mon.AppName)
+
 		}
 	}
 
+	fmt.Println("Spustit cron..")
 	s.StartAsync()
 
 	fs := http.FileServer(http.Dir("./MeasMon/templates/static"))

@@ -15,10 +15,14 @@ type ConfigDevices struct {
 	Monitors   []ConfigMonitors `yaml:"monitors,flow"`
 }
 
+
+
 type ConfigMonitors struct {
 	MonitorType string `yaml:"type"`
 	AppName     string `yaml:"app_name"`
 	Interval    int    `yaml:"interval"`
+	Status      int
+	Device      ConfigDevices
 }
 
 type DevicesStatus struct {
@@ -28,5 +32,5 @@ type DevicesStatus struct {
 
 type TmplHomeData struct {
 	Devices []DevicesStatus
-	
+
 }

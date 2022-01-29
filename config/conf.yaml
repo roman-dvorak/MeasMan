@@ -13,4 +13,7 @@ devices:
       monitors:
           - type: check_app_running
             app_name: ueyeethd
+            interval: 3
+          - type: check_app_running
+            app_name: nautilus
             interval: 5
