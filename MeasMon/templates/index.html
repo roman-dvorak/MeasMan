@@ -3,10 +3,34 @@
 <h1> Úvodní titulek.. </h1>
 
 <ul>
-{{ range $key, $element := .Devices }}
-	<li> {{$key}} </li>
+{{ range $dev_i, $dev := .Devices }}
+	<li> {{$dev_i}}: </li>
+		<ul>
+			{{ range $mon_i, $mon := $dev.Monitors}}
+				<li> {{$mon_i}}: {{$mon}}</li>
+			{{ end }}
+		</ul>
 {{ end }}
 </ul>
 
+<hr>
+
+ <div class="row">
+{{ range $dev_i, $dev := .Devices }}
+<div class="card m-2" style="width: 18rem;">
+  <div class="card-body">
+    <h5 class="card-title"> {{$dev_i}} </h5>
+    <h6 class="card-subtitle mb-2 text-muted"> </h6>
+    <p class="card-text"></p>
+	<ul>
+		{{ range $mon_i, $mon := $dev.Monitors}}
+			<li> {{$mon_i}}: {{$mon}}</li>
+		{{ end }}
+	</ul>
+
+  </div>
+</div>
+{{end}}
+</div>
 
 {{ end }}

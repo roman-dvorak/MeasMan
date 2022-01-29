@@ -5,15 +5,41 @@ group:
 
 
 devices:
-    - device_name: localhost
+    Device_1:
       url: localhost
       executor: localhost
       protocol: localhost
       system: ubuntu
       monitors:
-          - type: check_app_running
+          ueye_ethd:
+            type: check_app_running
             app_name: ueyeethd
-            interval: 3
-          - type: check_app_running
+            interval: 5
+            Parameters:
+                "Name": "Name"
+          nautilus:
+            type: check_app_running
             app_name: nautilus
             interval: 5
+
+    Device_2:
+      url: localhost
+      executor: localhost
+      protocol: localhost
+      system: ubuntu
+      monitors:
+          atom:
+            type: check_app_running
+            app_name: atom
+            interval: 5
+          firefox:
+            type: check_app_running
+            app_name: firefox
+            interval: 5
+          ping:
+            type: ping
+            app_name: ping
+            interval: 5
+            Parameters:
+                URL: "192.168.1.1"
+                count: 3

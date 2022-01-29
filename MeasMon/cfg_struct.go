@@ -3,7 +3,13 @@ package main
 type ConfigFile struct {
 	Name    string          `yaml:"name"`
 	Web     int             `yaml:"web"`
-	Devices []ConfigDevices `yaml:"devices,flow"`
+	//Devices []ConfigDevices `yaml:"devices,flow"`
+	Devices map[string]ConfigDevices `yaml:"devices"`
+}
+
+type MonitorLocation struct {
+	DeviceName string
+	MonitorName string
 }
 
 type ConfigDevices struct {
@@ -12,7 +18,9 @@ type ConfigDevices struct {
 	Executor   string           `yaml:"executor"`
 	Protocol   string           `yaml:"protocol"`
 	System     string           `yaml:"system"`
-	Monitors   []ConfigMonitors `yaml:"monitors,flow"`
+	//MonitorsRaw   []ConfigMonitors `yaml:"monitors,flow"`
+	Monitors   map[string]ConfigMonitors `yaml:"monitors"`
+	Status     int
 }
 
 
@@ -21,8 +29,17 @@ type ConfigMonitors struct {
 	MonitorType string `yaml:"type"`
 	AppName     string `yaml:"app_name"`
 	Interval    int    `yaml:"interval"`
+	Identificator string
 	Status      int
-	Device      ConfigDevices
+	Parameters map[string]interface{}
+	//Device      ConfigDevices
+}
+
+type MonitorCheckAppRunning struct {
+	Pid      []int
+	PName    string
+	PCount   int
+
 }
 
 type DevicesStatus struct {
